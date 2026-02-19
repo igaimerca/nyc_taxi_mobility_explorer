@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NYC Taxi Trip Explorer</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+</head>
+<body>
+    <header>
+        <h1>NYC Taxi Trip Explorer</h1>
+        <p>Exploring urban mobility patterns in New York City</p>
+    </header>
+
+    <nav>
+        <div class="nav-tabs">
+            <button class="tab-btn active" onclick="showTab('overview')">Overview</button>
+            <button class="tab-btn" onclick="showTab('patterns')">Patterns</button>
+            <button class="tab-btn" onclick="showTab('clusters')">Clusters</button>
+            <button class="tab-btn" onclick="showTab('insights')">Insights</button>
+        </div>
+    </nav>
+
+    <main>
+        <div id="overview" class="tab-content active">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3>Total Trips</h3>
+                    <div class="stat-value" id="totalTrips">-</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Avg Duration</h3>
+                    <div class="stat-value" id="avgDuration">-</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Avg Distance</h3>
+                    <div class="stat-value" id="avgDistance">-</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Avg Speed</h3>
+                    <div class="stat-value" id="avgSpeed">-</div>
+                </div>
+            </div>
+
+            <div class="charts-container">
+                <div class="chart-card">
+                    <h3>Trip Distribution by Borough</h3>
+                    <div id="boroughChart"></div>
+                </div>
+                <div class="chart-card">
+                    <h3>Hourly Trip Patterns</h3>
+                    <div id="hourlyChart"></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="patterns" class="tab-content">
+            <div class="filters">
+                <div class="filter-group">
+                    <label for="boroughFilter">Borough:</label>
+                    <select id="boroughFilter">
+                        <option value="">All Boroughs</option>
+                        <option value="Manhattan">Manhattan</option>
+                        <option value="Brooklyn">Brooklyn</option>
+                        <option value="Queens">Queens</option>
+                        <option value="Bronx">Bronx</option>
+                        <option value="Staten Island">Staten Island</option>
+                        <option value="EWR">EWR</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="hourFilter">Hour:</label>
+                    <select id="hourFilter">
+                        <option value="">All Hours</option>
+                        <option value="0">12 AM</option>
+                        <option value="6">6 AM</option>
+                        <option value="9">9 AM</option>
+                        <option value="12">12 PM</option>
+                        <option value="17">5 PM</option>
+                        <option value="21">9 PM</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="tripTypeFilter">Trip Type:</label>
+                    <select id="tripTypeFilter">
+                        <option value="">All Types</option>
+                        <option value="Within Borough">Within Borough</option>
+                        <option value="Cross Borough">Cross Borough</option>
+                    </select>
+                </div>
+                <button onclick="applyFilters()" class="filter-btn">Apply Filters</button>
+            </div>
+
+            <div class="map-container">
+                <h3>Pickup Locations Heatmap</h3>
+                <div id="map"></div>
+            </div>
+
+            <div class="charts-container">
+                <div class="chart-card">
+                    <h3>Trip Duration Distribution</h3>
+                    <div id="durationChart"></div>
+                </div>
+                <div class="chart-card">
+                    <h3>Speed vs Distance</h3>
+                    <div id="speedDistanceChart"></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="clusters" class="tab-content">
+            <div class="cluster-controls">
+                <div class="control-group">
+                    <label for="clusterCount">Number of Clusters:</label>
+                    <input type="number" id="clusterCount" value="5" min="2" max="10">
+                </div>
+                <div class="control-group">
+                    <label for="sampleSize">Sample Size:</label>
+                    <input type="number" id="sampleSize" value="10000" min="1000" max="50000" step="1000">
+                </div>
+                <button onclick="generateClusters()" class="cluster-btn">Generate Clusters</button>
+            </div>
+
+            <div class="cluster-results">
+                <div id="clusterInfo"></div>
+                <div id="clusterChart"></div>
+            </div>
+        </div>
+
+        <div id="insights" class="tab-content">
+            <div class="insights-container">
+                <div class="insight-card">
+                    <h3>Insight 1: Rush Hour Patterns</h3>
+                    <div class="insight-content">
+                        <p>Analysis of trip patterns during peak hours reveals distinct mobility behaviors across NYC boroughs.</p>
+                        <div id="rushHourChart"></div>
+                    </div>
+                </div>
+
+                <div class="insight-card">
+                    <h3>Insight 2: Cross-Borough Mobility</h3>
+                    <div class="insight-content">
+                        <p>Cross-borough trips show different characteristics compared to within-borough trips, indicating urban connectivity patterns.</p>
+                        <div id="crossBoroughChart"></div>
+                    </div>
+                </div>
+
+                <div class="insight-card">
+                    <h3>Insight 3: Speed Patterns by Location</h3>
+                    <div class="insight-content">
+                        <p>Average trip speeds vary significantly by borough, reflecting different urban densities and traffic patterns.</p>
+                        <div id="speedPatternChart"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>NYC Taxi Trip Data Explorer - Urban Mobility Analysis</p>
+    </footer>
+
+    <script src="js/app.js"></script>
+</body>
+</html>
